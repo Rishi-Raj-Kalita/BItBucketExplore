@@ -1,4 +1,4 @@
-package com.backend.api.searchmodel;
+package com.backend.api.responseModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,8 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchHits {
-    public  TotalResults total;
-    public double max_score;
-    public List<ArrayItems> hits;
+public class UserResponse {
+    int total;
+    List<ResponseModel> result;
 }

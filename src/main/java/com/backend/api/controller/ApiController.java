@@ -3,6 +3,7 @@ package com.backend.api.controller;
 import com.backend.api.requestModel.FilterModel;
 import com.backend.api.requestModel.RequestModel;
 import com.backend.api.responseModel.ResponseModel;
+import com.backend.api.responseModel.UserResponse;
 import com.backend.api.searchmodel.ArrayItems;
 import com.backend.api.searchmodel.Response;
 import com.backend.api.ControllerService.ApiService;
@@ -23,7 +24,7 @@ public class ApiController {
    private ApiService apiService;
 
     @PostMapping(value="/search")
-    public List<ResponseModel> getAll(@RequestBody RequestModel obj)
+    public UserResponse getAll(@RequestBody RequestModel obj)
     {
 //         Iterator<FilterModel>it=obj.filter.iterator();
 //         FilterModel curr=it.next();

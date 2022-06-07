@@ -6,6 +6,7 @@ import com.backend.api.repoSearchModel.RepoResponse;
 import com.backend.api.requestModel.FilterModel;
 import com.backend.api.requestModel.Search_After_Model;
 import com.backend.api.requestModel.Terms;
+import com.backend.api.responseModel.UserResponse;
 import com.backend.api.searchService.SearchService;
 import com.backend.api.responseModel.ResponseModel;
 import com.backend.api.searchmodel.ArrayItems;
@@ -34,7 +35,7 @@ public class ApiService {
 
     private String baseUrl="https://stage.els.scm.mastercard.int:13531";
 
-    public List<ResponseModel> getAllObjects(String typeQuery, String keywordQuery, List<FilterModel>filterQuery, int size, int from, List<Double>after)  {
+    public UserResponse getAllObjects(String typeQuery, String keywordQuery, List<FilterModel>filterQuery, int size, int from, List<Double>after)  {
 
 
 
@@ -59,7 +60,7 @@ public class ApiService {
 
         if(hits.size()==0)
         {
-            return allItems;
+            return new UserResponse();
         }
 
 
@@ -109,7 +110,9 @@ public class ApiService {
 //        System.out.println(size2);
 //        System.out.println();
 
-        return allItems;
+        UserResponse userResponse=new UserResponse(response.getBody().hits.total.value,allItems);
+
+        return userResponse;
 
     }
 }
