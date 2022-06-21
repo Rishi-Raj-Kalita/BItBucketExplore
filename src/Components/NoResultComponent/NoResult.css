@@ -1,0 +1,25 @@
+.NoResultContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-top: 2%;
+}
+
+.NoResultText {
+  width: 554px;
+  height: 65px;
+  left: 537px;
+  top: 236px;
+
+  font-family: "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji";
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 50px;
+  /* or 250% */
+  text-align: center;
+
+  color: #24292f;
+}

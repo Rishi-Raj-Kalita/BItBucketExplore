@@ -1,0 +1,95 @@
+.filtersText {
+  width: 100%;
+  height: 50px;
+  left: 40px;
+  top: 10%;
+
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 50px;
+  color: #24292f;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+
+  padding-left: 5%;
+
+  margin-top: 2%;
+}
+
+.filterInputContainer {
+  display: flex;
+}
+
+.filters input[type="text"] {
+  box-sizing: border-box;
+
+  width: 85%;
+
+  height: 36px;
+  font-size: 14px;
+
+  font-family: "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji";
+
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+
+  padding: 10px;
+}
+
+.crossIcon {
+  margin-left: auto;
+  margin-right: 4%;
+}
+
+.crossIconImg {
+  cursor: pointer;
+}
+
+.plusIcon {
+  width: 25.83px;
+  height: 26px;
+  left: 306px;
+  top: 152px;
+  border-radius: 50%;
+  align-self: center;
+
+  cursor: pointer;
+
+  padding: 8px;
+}
+
+.addedFilters {
+  display: flex;
+  width: 75%;
+  height: 36px;
+  background: white;
+  border: 1px solid #cf4500;
+  border-radius: 5px;
+  align-items: center;
+  margin-left: 12px;
+  margin-top: 8px;
+}
+
+.addedFiltersText {
+  padding-left: 10px;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 50px;
+  color: #cf4500;
+}
+
+@media screen and (max-width: 1100px) {
+  .addedFiltersText {
+    font-size: 12px;
+  }
+}

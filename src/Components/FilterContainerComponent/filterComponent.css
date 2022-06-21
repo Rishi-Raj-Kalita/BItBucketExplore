@@ -1,0 +1,87 @@
+.filterCotainer {
+  display: flex;
+  margin-top: 16px;
+}
+
+.seperator {
+  width: 90%;
+  height: 0.5px;
+  background: #e5e5e5;
+  border-bottom: 0.5px solid #e5e5e5;
+  margin-top: 1%;
+  margin-left: 10px;
+}
+
+.filterButtonContainer {
+  margin-left: auto;
+  margin-right: 56px;
+  align-self: center;
+}
+
+.results {
+  margin-left: 8px;
+}
+
+.filterButton {
+  display: flex;
+
+  align-items: center;
+
+  color: #24292f;
+  width: 230px;
+  height: 36px;
+  left: 1018px;
+  top: 83px;
+
+  border: none;
+
+  background: #222222;
+  border-radius: 5px;
+
+  padding: 5px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  text-align: left;
+
+  border: 1px solid #e5e5e5;
+  box-shadow: 0px 4px 4px #d9d9d9;
+  border-radius: 5px;
+}
+
+.searchResults {
+  width: 355px;
+  height: 50px;
+  left: 416px;
+  top: 86px;
+
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 50px;
+
+  color: #24292f;
+}
+
+.upDownArrow {
+  width: 25px;
+  height: 18px;
+  left: 1222px;
+  top: 93px;
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.btnText {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  color: white;
+}

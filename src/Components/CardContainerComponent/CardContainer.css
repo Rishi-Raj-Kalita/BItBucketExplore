@@ -1,0 +1,8 @@
+.seperator {
+  width: 90%;
+  height: 0.5px;
+  background: #e5e5e5;
+  border-bottom: 0.5px solid #e5e5e5;
+  margin-top: 1%;
+  margin-left: 10px;
+}

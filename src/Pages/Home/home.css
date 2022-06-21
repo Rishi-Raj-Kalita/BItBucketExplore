@@ -1,0 +1,32 @@
+.homeContainer {
+  display: flex;
+  height: 100%;
+}
+
+.leftContainer {
+  width: 20%;
+}
+
+.rightContainer {
+  flex-grow: 1;
+  margin-left: 2%;
+  width: 80%;
+}
+
+/* @media screen and (max-width: 1550px) {
+  .leftContainer {
+    width: 50%;
+  }
+}
+
+@media screen and (max-width: 1400px) {
+  .leftContainer {
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  .leftContainer {
+    width: 90%;
+  }
+} */

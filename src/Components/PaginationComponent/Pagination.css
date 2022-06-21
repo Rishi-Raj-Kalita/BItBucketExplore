@@ -1,0 +1,40 @@
+.PaginationContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2%;
+}
+
+.next_prev {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 50px;
+  cursor: pointer;
+  /* or 312% */
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  color: #cf4500;
+}
+
+.paginationText {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 50px;
+  /* or 312% */
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 2px;
+
+  color: #cf4500;
+  margin-right: 1%;
+  margin-left: 1%;
+}
