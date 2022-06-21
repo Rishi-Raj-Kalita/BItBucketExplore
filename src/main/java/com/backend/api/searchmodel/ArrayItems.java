@@ -1,7 +1,6 @@
 package com.backend.api.searchmodel;
 
 
-import com.backend.api.requestModel.Search_After_Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

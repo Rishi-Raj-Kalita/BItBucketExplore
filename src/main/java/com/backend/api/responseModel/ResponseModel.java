@@ -1,10 +1,5 @@
 package com.backend.api.responseModel;
 
-import com.backend.api.requestModel.Search_After_Model;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 

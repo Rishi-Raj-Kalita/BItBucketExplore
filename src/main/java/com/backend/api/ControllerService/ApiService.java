@@ -4,8 +4,6 @@ import com.backend.api.auth.AuthController;
 import com.backend.api.repoSearchModel.RepoArrayItems;
 import com.backend.api.repoSearchModel.RepoResponse;
 import com.backend.api.requestModel.FilterModel;
-import com.backend.api.requestModel.Search_After_Model;
-import com.backend.api.requestModel.Terms;
 import com.backend.api.responseModel.UserResponse;
 import com.backend.api.searchService.SearchService;
 import com.backend.api.responseModel.ResponseModel;
@@ -16,10 +14,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.swing.plaf.synth.SynthTextAreaUI;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ApiService {
@@ -33,86 +28,242 @@ public class ApiService {
     @Autowired
     private SearchService searchService;
 
+    private int MAXI_REPO=1000;
+
     private String baseUrl="https://stage.els.scm.mastercard.int:13531";
 
-    public UserResponse getAllObjects(String typeQuery, String keywordQuery, List<FilterModel>filterQuery, int size, int from, List<Double>after)  {
+    public  Map<Integer,RepoArrayItems> mapRepoIds(List<String>queryStrList)
+    {
+        HashMap<Integer,RepoArrayItems>repoMap=new HashMap<>();
+
+        List<List<RepoArrayItems>>repoHits2=new ArrayList<>();
+
+        for(int i=0;i<queryStrList.size();i++)
+        {
+            String str=queryStrList.get(i);
 
 
 
+            ResponseEntity<RepoResponse>repoResponseResponseEntity2=searchService.searchRepoUtil(str);
 
+            RepoResponse repoResponse2=repoResponseResponseEntity2.getBody();
+
+            repoHits2.add(repoResponse2.hits.hits);
+        }
+
+
+        for(int i=0;i<repoHits2.size();i++)
+        {
+            List<RepoArrayItems>currRepoList=repoHits2.get(i);
+
+
+            for(int j=0;j<currRepoList.size();j++)
+            {
+                RepoArrayItems currRepo=currRepoList.get(j);
+                int id=Integer.parseInt(currRepo._id);
+
+                if(repoMap.get(id)==null)
+                {
+                    repoMap.put(id,currRepo);
+                }
+            }
+        }
+
+
+        return repoMap;
+    }
+
+    public UserResponse getAllObjectsUtilReverse(String typeQuery, String keywordQuery, List<FilterModel>filterQuery, int size, List<Double>after,int next)
+    {
         String url = baseUrl+"/bitbucket-search/_search";
 
-
-
-        HttpHeaders headers =authController.generateAuth();
-
-        String req=filterQuery==null?searchService.matchQuery(typeQuery,keywordQuery,size,from,after):searchService.filterFunct(typeQuery,keywordQuery,filterQuery,size,from,after);
-
-
-        HttpEntity<String> request = new HttpEntity<String>(req,headers);
-
-
-        ResponseEntity<Response> response = restTemplate.exchange(url, HttpMethod.POST, request, Response.class);
-
-        List<ArrayItems> hits=response.getBody().hits.hits;
-
-        List<ResponseModel> allItems=new ArrayList<>();
-
-        if(hits.size()==0)
+        if(size>1000)
         {
             return new UserResponse();
         }
 
+        try{
+            HttpHeaders headers =authController.generateAuth();
 
-        for(int i=0;i<hits.size();i++)
+
+            String req=filterQuery==null?searchService.matchQueryDesc(typeQuery,keywordQuery,size,after):searchService.filterFunctDesc(typeQuery,keywordQuery,filterQuery,size,after);
+
+
+            HttpEntity<String> request = new HttpEntity<String>(req,headers);
+
+
+            ResponseEntity<Response> response = restTemplate.exchange(url, HttpMethod.POST, request, Response.class);
+
+
+            List<ArrayItems> hits=response.getBody().hits.hits;
+
+            List<ResponseModel> allItems=new ArrayList<>();
+
+            if(hits.size()==0)
+            {
+                return new UserResponse();
+            }
+
+            Set<Integer>repoIds=new HashSet<>();
+
+            for(int i=0;i<hits.size();i++)
+            {
+                ArrayItems curr=hits.get(i);
+
+                int repoId=curr._source.repositoryId;
+                repoIds.add(repoId);
+            }
+
+
+            List<String> queryStrList=searchService.matchReposQuery(repoIds);
+
+            Map<Integer,RepoArrayItems> repoMap=mapRepoIds(queryStrList);
+
+
+            for(int i=0;i<hits.size();i++)
+            {
+
+                ArrayItems curr=hits.get(i);
+
+                int repoId=curr._source.repositoryId;
+
+                String repoName="Na",projName="Na";
+
+
+                if(repoMap.get(repoId)!=null)
+                {
+                    RepoArrayItems currRepo=repoMap.get(repoId);
+
+                    repoName=currRepo._source.getName();
+                    projName=currRepo._source.getQuickSearchProjectName();
+                }
+
+                ResponseModel responseModel=new ResponseModel(curr._type,curr._source.path,repoName,curr._source.extension,curr._source.filename,curr._source.size,curr._score,projName,curr._source.content,curr.sort);
+
+                allItems.add(responseModel);
+
+
+            }
+
+            Collections.reverse(allItems);
+
+            UserResponse userResponse=new UserResponse(response.getBody().hits.total.value,allItems);
+
+            return userResponse;
+
+        }catch(Exception error)
         {
-            ArrayItems curr=hits.get(i);
-            int repoId=curr._source.repositoryId;
-            int projId=curr._source.projectId;
-
-
-            ResponseEntity<RepoResponse>repoResponse=searchService.searchRepo(repoId,projId);
-
-            List<RepoArrayItems>repoHits=repoResponse.getBody().hits.hits;
-
-            String projName,repoName;
-            if(repoHits.size()==0)
-            {
-                repoName="NA";
-                projName="NA";
-            }
-            else
-            {
-                Iterator<RepoArrayItems>repoItr=repoHits.iterator();
-
-                RepoArrayItems currRepo=repoItr.next();
-
-                repoName=currRepo._source.getName();
-                projName=currRepo._source.getQuickSearchProjectName();
-            }
-
-//            System.out.println(curr.sort);
-
-
-
-
-            ResponseModel responseModel=new ResponseModel(curr._type,curr._source.path,repoName,curr._source.extension,curr._source.filename,curr._source.size,curr._score,projName,curr._source.content,curr.sort);
-
-            allItems.add(responseModel);
-
-
+            System.out.println(error);
         }
-//        int size=allItems.size();
-//        int size2=hits.size();
+
+        return new UserResponse();
 
 
-//        System.out.println(size);
-//        System.out.println(size2);
-//        System.out.println();
 
-        UserResponse userResponse=new UserResponse(response.getBody().hits.total.value,allItems);
-
-        return userResponse;
 
     }
+
+    public UserResponse getAllObjectsUtil(String typeQuery, String keywordQuery, List<FilterModel>filterQuery, int size, List<Double>after,int next)
+    {
+        String url = baseUrl+"/bitbucket-search/_search";
+
+        if(size>1000)
+        {
+            return new UserResponse();
+        }
+
+//        System.out.println("next"+next);
+
+        if(next==1)
+        {
+          try{
+              return getAllObjectsUtilReverse(typeQuery,keywordQuery,filterQuery,size,after,next);
+          }catch(Exception e)
+          {
+              System.out.println(e);
+
+              return new UserResponse();
+          }
+        }
+
+        try{
+                HttpHeaders headers =authController.generateAuth();
+
+
+                String req=filterQuery==null?searchService.matchQuery(typeQuery,keywordQuery,size,after):searchService.filterFunct(typeQuery,keywordQuery,filterQuery,size,after);
+
+
+                HttpEntity<String> request = new HttpEntity<String>(req,headers);
+
+
+                ResponseEntity<Response> response = restTemplate.exchange(url, HttpMethod.POST, request, Response.class);
+
+
+                List<ArrayItems> hits=response.getBody().hits.hits;
+
+                List<ResponseModel> allItems=new ArrayList<>();
+
+                if(hits.size()==0)
+                {
+                    return new UserResponse();
+                }
+
+                Set<Integer>repoIds=new HashSet<>();
+
+                for(int i=0;i<hits.size();i++)
+                {
+                    ArrayItems curr=hits.get(i);
+
+                    int repoId=curr._source.repositoryId;
+                    repoIds.add(repoId);
+                }
+
+
+                List<String> queryStrList=searchService.matchReposQuery(repoIds);
+
+                Map<Integer,RepoArrayItems> repoMap=mapRepoIds(queryStrList);
+
+
+                for(int i=0;i<hits.size();i++)
+                {
+
+                    ArrayItems curr=hits.get(i);
+
+                    int repoId=curr._source.repositoryId;
+
+                    String repoName="Na",projName="Na";
+
+
+                    if(repoMap.get(repoId)!=null)
+                    {
+                        RepoArrayItems currRepo=repoMap.get(repoId);
+
+                        repoName=currRepo._source.getName();
+                        projName=currRepo._source.getQuickSearchProjectName();
+                    }
+
+                    ResponseModel responseModel=new ResponseModel(curr._type,curr._source.path,repoName,curr._source.extension,curr._source.filename,curr._source.size,curr._score,projName,curr._source.content,curr.sort);
+
+                    allItems.add(responseModel);
+
+
+                }
+
+                UserResponse userResponse=new UserResponse(response.getBody().hits.total.value,allItems);
+
+                return userResponse;
+
+        }catch(Exception error)
+        {
+            System.out.println(error);
+        }
+
+        return new UserResponse();
+
+
+
+
+    }
+
+
 }

@@ -10,5 +10,6 @@ public class RequestModel {
     public List<FilterModel> filter;
     public int size;
     public List<Double>after;
+    public int next;
 
 }

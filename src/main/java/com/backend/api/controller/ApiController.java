@@ -17,7 +17,7 @@ import java.awt.*;
 import java.util.Iterator;
 import java.util.List;
 
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class ApiController {
    @Autowired
@@ -26,10 +26,8 @@ public class ApiController {
     @PostMapping(value="/search")
     public UserResponse getAll(@RequestBody RequestModel obj)
     {
-//         Iterator<FilterModel>it=obj.filter.iterator();
-//         FilterModel curr=it.next();
-//         System.out.println(curr.type);
-        return apiService.getAllObjects(obj.type,obj.keyword,obj.filter,obj.size,obj.from,obj.after);
+
+        return apiService.getAllObjectsUtil(obj.type,obj.keyword,obj.filter,obj.size,obj.after,obj.next);
     }
 
 
